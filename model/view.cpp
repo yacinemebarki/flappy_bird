@@ -1,17 +1,44 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <random>
+#include <vector>
+#include <string>
 #include "bird.cpp"
 #include "pip.cpp"
+
+
+std::random_device rd;
+float image1_size = 265;
+float image2_size = 249;
+std::string path_image_pip1 = "../../images/pipe1.png";
+std::string path_image_pip2 = "../../images/pipe2.png";
+
+void generate_pip(std::vector<pip> &pip_arr){
+
+    float y1 = -10;
+    float x = 1280;
+    float diff_y = 230;
+    std::uniform_real_distribution<float> dist(0, 2);
+    float resize_pip1 = dist(rd);
+
+    float pip1_max = image1_size * resize_pip1 + y1;
+    float resize_pip2 = dist(rd);
+    float pip2_max = diff_y + pip1_max;
+    float y2 = pip2_max - image2_size * resize_pip2;
+    pip_arr.emplace_back(x, y1, path_image_pip1, resize_pip1);
+    pip_arr.emplace_back(x, y2 ,path_image_pip2, resize_pip2);
+}
+
+float move_x = 0.7;
+float diff_x = 500;
+float sum_x = move_x;
 
 
 int main(){
     
     sf::RenderWindow window(sf::VideoMode(1280,732),"Flappy Bird");
-    bird Bird(150, 300, "../../images/Bird.png");
-    pip Pip(300, -10, "../../images/pipe1.png", 2);
-    pip Pip1(560, 490, "../../images/pipe2.png", 1);     
-     
+    bird Bird(150, 300, "../../images/Bird.png");     
+    std::vector<pip> pip_arr;
     sf::Texture background;
     if(!background.loadFromFile("../../images/background.png")){
         std::cout <<"image dont loaded"<< std::endl;
@@ -33,18 +60,32 @@ int main(){
                 window.close();
             }
         }
+    
+        if(sum_x > diff_x){
+            generate_pip(pip_arr);
+            sum_x = move_x;
+        }
+
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         text.setString("X: " + std::to_string(mousePos.x) +" Y: " + std::to_string(mousePos.y));
         text.setPosition(10, 10);
         window.clear();
+        
         window.draw(image);
         window.draw(Bird.image);
-        window.draw(Pip.image);
-        window.draw(Pip1.image);
+        
+        for(size_t i = 0; i < pip_arr.size() ; i++){
+            window.draw(pip_arr[i].image);         
+        }
+
         window.draw(text);
+        
         window.display();
-        Pip1.move();
-        Pip.move();
+
+        for(size_t i= 0; i < pip_arr.size() ; i++){
+            pip_arr[i].move();         
+        }
+        sum_x += move_x;
     }
     return 0;
     

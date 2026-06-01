@@ -31,7 +31,7 @@ class pip{
         image.setScale(1.0f, y_size);
     }
     public: void move(){
-        float move_x = 0.2;
+        float move_x = 0.7;
         x -= move_x;
         image.setPosition(x, y);
     }
