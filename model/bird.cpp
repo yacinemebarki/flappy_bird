@@ -33,6 +33,11 @@ class bird{
         }
         velocity += gravity * dt;
         y += velocity * dt;  
+        if(y < 0 || y >732){
+            y = 0;
+            velocity = 0;
+        }
+
         image.setPosition(x, y);
     }
 };
