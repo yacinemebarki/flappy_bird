@@ -1,6 +1,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <memory>
+
 
 class pip{
     
@@ -10,7 +12,7 @@ class pip{
             bool up;
             float scale;
     public: sf::Sprite image;
-            sf::Texture pip_image;
+            std::shared_ptr<sf::Texture> pip_image;
     
     public: pip(float x, float y,std::string path, float y_size){
         this->x = x;
@@ -27,16 +29,17 @@ class pip{
         else {
             std::cout <<"invalid image path"<< std::endl;
         }
-        if(!pip_image.loadFromFile(path)){
+        pip_image = std::make_shared<sf::Texture>();
+        if(!pip_image->loadFromFile(path)){
             std::cout <<"fail to load image"<< std::endl;
             return;
         }
-        image.setTexture(pip_image);
+        image.setTexture(*pip_image);
         image.setPosition(x, y);
         image.setScale(1.0f, y_size);
     }
     public: void move(){
-        float move_x = 0.7;
+        float move_x = 1.5;
         x -= move_x;
         image.setPosition(x, y);
     }
