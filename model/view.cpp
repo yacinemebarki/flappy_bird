@@ -22,16 +22,17 @@ void generate_pip(std::vector<pip> &pip_arr){
     float resize_pip1 = dist(rd);
 
     float pip1_max = image1_size * resize_pip1 + y1;
-    float resize_pip2 = dist(rd);
-    float pip2_max = diff_y + pip1_max;
-    float y2 = pip2_max - image2_size * resize_pip2;
+    float y2 = diff_y + pip1_max;
+    float resize_pip2 = (732 - y2) / image2_size;
+    std::cout << "h1 = " << image1_size * resize_pip1 << "\n";
+    std::cout << "y2 = " << y2 << "\n";
     pip_arr.emplace_back(x, y1, path_image_pip1, resize_pip1);
     pip_arr.emplace_back(x, y2 ,path_image_pip2, resize_pip2);
 }
 
 float move_x = 0.7;
 float diff_x = 500;
-float sum_x = move_x;
+float sum_x = 500;
 
 
 int main(){
@@ -53,18 +54,29 @@ int main(){
     text.setFont(font);
     text.setCharacterSize(20);
     text.setFillColor(sf::Color::White);
+    sf::Clock clock;
     while (window.isOpen()){
         sf::Event event;
+        float dt = clock.restart().asSeconds(); 
         while(window.pollEvent(event)){
             if(event.type == sf::Event::Closed){
                 window.close();
             }
+            if (event.type == sf::Event::KeyPressed &&event.key.code == sf::Keyboard::Up) {
+                Bird.up();
+                std::cout<<"key preesed"<<std::endl;
+            }
         }
-    
+        if(dt > 0.05){
+            dt = 0.05;
+        }
+        Bird.down(dt);
+
         if(sum_x > diff_x){
             generate_pip(pip_arr);
             sum_x = move_x;
         }
+        
 
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         text.setString("X: " + std::to_string(mousePos.x) +" Y: " + std::to_string(mousePos.y));

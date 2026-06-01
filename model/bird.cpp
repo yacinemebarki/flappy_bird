@@ -2,12 +2,16 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
+float y_up = 400;
 class bird{
     
     public: float x;
     public: float y;
+            float velocity = 0;
+            float gravity = 800;
     public: sf::Sprite image;
             sf::Texture bird_image;
+            bool started = false;
 
     public: bird(float x, float y, std::string path){
         this->x = x;
@@ -20,9 +24,15 @@ class bird{
         image.setPosition(x, y);
     }
     public: void up(){
-        this->y += 30;
+        velocity = -y_up;
+        started = true;
     }
-    public: void down(){
-        this->y -= 30;
+    public: void down(float dt){
+        if (!started){
+            return;
+        }
+        velocity += gravity * dt;
+        y += velocity * dt;  
+        image.setPosition(x, y);
     }
 };
