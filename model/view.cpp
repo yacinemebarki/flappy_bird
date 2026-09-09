@@ -15,7 +15,6 @@ std::string path_image_pip2 = "../../images/pipe2.png";
 float max_image = 732;
 
 void generate_pip(std::vector<pip> &pip_arr){
-
     float y1 = -10;
     float x = 1280;
     float diff_y = 230;
